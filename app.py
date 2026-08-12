@@ -525,6 +525,81 @@ def inject_global_css():
             background: #fff !important;
             box-shadow: 0 0 0 2px rgba(24,84,255,.08) !important;
         }
+
+        /* ══ Hero 信任标签 ══ */
+        .hero-trust {
+            margin-top: 20px;
+            font-size: 13px;
+            color: var(--gray);
+            letter-spacing: 0.2px;
+        }
+
+        /* ══ 对比表 ══ */
+        /* 外层卡片：border-radius + overflow:hidden 裁剪表格四角 */
+        .cmp-wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        /* 横向滚动层：只控制移动端滚动，不影响外层圆角 */
+        .cmp-scroll {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .cmp-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 560px;
+        }
+        .cmp-table thead th {
+            padding: 16px 20px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--dark);
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .cmp-table thead th:first-child {
+            text-align: left;
+            border-right: 1px solid var(--border);
+        }
+        .cmp-table thead th.cmp-hl {
+            color: var(--brand);
+            background: var(--brand-bg);
+        }
+        .cmp-table tbody td {
+            padding: 16px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+            color: var(--gray);
+            line-height: 1.7;
+            vertical-align: top;
+            font-size: 13px;
+        }
+        .cmp-table tbody tr:last-child td { border-bottom: none; }
+        .cmp-table tbody td:first-child {
+            text-align: left;
+            font-weight: 500;
+            color: var(--dark);
+            background: var(--bg);
+            border-right: 1px solid var(--border);
+            white-space: nowrap;
+        }
+        .cmp-table tbody td.cmp-hl {
+            background: #FAFBFF;
+            color: var(--dark);
+        }
+
+        /* ══ FAQ ══ */
+        .faq-wrap { max-width: 760px; margin: 0 auto; }
+        .faq-item { border-bottom: 1px solid var(--border); padding: 28px 0; }
+        .faq-item:first-child { border-top: 1px solid var(--border); }
+        .faq-q { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 12px; line-height: 1.5; }
+        .faq-a { font-size: 14px; color: var(--gray); line-height: 1.85; }
         </style>
         """,
         unsafe_allow_html=True,
@@ -580,6 +655,7 @@ def render_hero():
                 <a class="btn-primary" href="/trial">立即体验</a>
                 <a class="btn-outline" href="#cases">了解六大特色功能</a>
             </div>
+            <p class="hero-trust">🔒 支持私有化本地部署 &nbsp;·&nbsp; 数据不出内网 &nbsp;·&nbsp; 适配涉密项目</p>
         </section>
         """,
         unsafe_allow_html=True,
@@ -629,7 +705,7 @@ def render_advantages():
             }}
         }}
         </style>
-        <section class="section sec-gray" id="advantages">
+        <section class="section sec-white" id="advantages">
             <div class="sec-title">核心优势</div>
             <div class="sec-sub">不是通用 AI 套壳，而是深度垂直于工程咨询行业的专业系统</div>
             <div class="adv-grid">{cards_html}</div>
@@ -838,7 +914,7 @@ def render_cases():
     )
     st.markdown(
         f"""
-        <section class="section sec-white" id="cases">
+        <section class="section sec-gray" id="cases">
             <div class="sec-title">六大特色功能</div>
             <div class="sec-sub">针对工程咨询报告的独特需求设计的六项专有机制——确保报告引用真实、逻辑自洽、篇幅精准</div>
             <div class="adv-grid-3">{cards_html}</div>
@@ -871,10 +947,151 @@ def render_process():
     )
     st.markdown(
         f"""
-        <section class="section sec-gray" id="process">
+        <section class="section sec-white" id="process">
             <div class="sec-title">五步工作流程</div>
             <div class="sec-sub">无需学习复杂操作，五步向导式工作流，从资料到成稿，全程向导化</div>
             <div class="process-wrap">{items_html}</div>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# ─────────────────────────────────────────
+# 对比区块：为什么不直接用通用 AI？
+# ─────────────────────────────────────────
+def render_comparison():
+    rows = [
+        ("行业规范内置",
+         "无，依赖提示词临时补充",
+         "严格对标《决策评价_2024》<br>14 种报告预定义骨架与字数预算"),
+        ("知识来源可追溯",
+         "训练数据，无法追溯出处",
+         "三源融合，每处引用标注来源<br>（文件名 / 技术标准 / 网页标题）"),
+        ("跨章逻辑一致性",
+         "自行管理，章节间易矛盾",
+         "跨章方案锁定 + 过期章节检测<br>前后逻辑强制一致"),
+        ("篇幅管控",
+         "手动控制，字数难保证",
+         "自动字数校验 + 最多 2 轮修正<br>全篇 2 万～5.5 万字精准达标"),
+        ("数据安全",
+         "数据上传至第三方服务器",
+         "支持私有化本地部署<br>数据不出内网，适配涉密项目"),
+        ("行业适配深度",
+         "通用场景，非行业专用",
+         "21 类工程专业深度适配<br>50 类鼓励类产业自动匹配"),
+    ]
+    rows_html = "".join(
+        f"""<tr>
+            <td>{dim}</td>
+            <td>{col1}</td>
+            <td class="cmp-hl">{col2}</td>
+        </tr>"""
+        for dim, col1, col2 in rows
+    )
+    st.markdown(
+        f"""
+        <section class="section sec-white" id="comparison">
+            <div class="sec-title">为什么不直接用通用 AI？</div>
+            <div class="sec-sub">通用大模型解决不了工程咨询报告的核心问题——行业规范合规、引用可追溯、全文逻辑自洽</div>
+            <div class="cmp-wrap">
+                <div class="cmp-scroll">
+                    <table class="cmp-table">
+                        <thead>
+                            <tr>
+                                <th>对比维度</th>
+                                <th>通用大模型</th>
+                                <th class="cmp-hl">✦ 需求文档
+                                    <br><span style="font-size:12px;font-weight:400;">专为工程咨询设计</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>{rows_html}</tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# ─────────────────────────────────────────
+# 典型使用场景（占位，待替换为真实案例）
+# ─────────────────────────────────────────
+def render_scenarios():
+    scenarios = [
+        ("可行性研究报告",
+         "省级能源基础设施项目",
+         "编制团队 2 人，传统流程需 3～4 周反复修改，版本管理混乱，跨章数据不一致。",
+         "使用需求文档 2 天完成全文初稿，三源引用自动标注，跨章方案锁定确保前后一致，工程师审阅后顺利提交评审。",
+         "交付周期缩短约 80%"),
+        ("资金申请报告",
+         "县级公共基础设施项目",
+         "政策依据检索耗时长，申报规范更新频繁，人工对照规范效率低，易遗漏关键章节。",
+         "系统自动融合最新政策与行业知识库，章节骨架严格对标申报规范，一次性完成全文结构，大幅减少返工次数。",
+         "规范符合率显著提升"),
+        ("产业园区发展规划",
+         "地方政府产业园区项目",
+         "需覆盖宏观政策、产业现状、竞争格局多维度内容，人工搜集整理周期长，大体量报告篇幅难以把控。",
+         "实时互联网搜索融合行业数据，智能写作顺序确保现状分析先于战略规划，篇幅自动校验控制全文字数在预算范围内。",
+         "信息整合效率提升 5 倍以上"),
+    ]
+    cards_html = "".join(
+        f"""
+        <div class="case-card">
+            <span class="case-tag">{rtype}</span>
+            <h3>{title}</h3>
+            <p><strong style="color:var(--dark);font-size:13px;">痛点：</strong>{pain}</p>
+            <p style="margin-top:10px;">{solution}</p>
+            <div class="case-result">→ {result}</div>
+        </div>
+        """
+        for rtype, title, pain, solution, result in scenarios
+    )
+    st.markdown(
+        f"""
+        <section class="section sec-gray" id="scenarios">
+            <div class="sec-title">典型使用场景</div>
+            <div class="sec-sub">以下为典型业务场景示意，实际效果因项目复杂度与工程师专业判断而有所不同</div>
+            <div class="case-grid">{cards_html}</div>
+        </section>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+# ─────────────────────────────────────────
+# 常见问题（FAQ）
+# ─────────────────────────────────────────
+def render_faq():
+    faqs = [
+        ("生成的报告能直接提交评审吗？",
+         "需求文档定位是 AI 辅助编制工具，生成内容为专业初稿，需由具备资质的工程师审阅、核实数据并修改完善后，方可用于正式评审提交。我们不承诺评审通过结果，成果质量最终取决于工程师的专业判断。"),
+        ("项目资料上传后数据是否安全？",
+         "我们支持私有化本地部署，数据完全不出内网，适配涉密项目需求。云端版本采用加密传输，项目文件仅用于本次报告编制，不用于模型训练或其他用途。"),
+        ("目前支持哪些报告类型？",
+         "当前已开放：可行性研究报告、初步可行性研究报告、项目建议书、资金申请报告、项目评估报告、产业/企业/园区发展规划报告，共 6 种。后评价报告、社会评价报告等共 14 种类型持续开放中。"),
+        ("需要安装软件或配置环境吗？",
+         "不需要。云端版本直接通过浏览器访问，无需安装任何软件，开箱即用。如需私有化部署，我们提供完整的部署支持与技术文档。"),
+        ("和直接使用 ChatGPT 等通用 AI 有什么区别？",
+         "通用大模型不了解工程咨询行业规范，无法保证章节结构合规、字数达标，且知识来源无法追溯。需求文档内置《决策评价_2024》等行业标准，三源知识引用均标注来源，跨章逻辑强制一致，专为工程报告编制场景设计。"),
+        ("如何申请试用？",
+         "填写页面下方的申请表单，留下姓名和联系方式，我们将在 1 个工作日内与您联系，安排产品演示与试用账号。"),
+    ]
+    items_html = "".join(
+        f"""<div class="faq-item">
+            <div class="faq-q">Q：{q}</div>
+            <div class="faq-a">{a}</div>
+        </div>"""
+        for q, a in faqs
+    )
+    st.markdown(
+        f"""
+        <section class="section sec-gray" id="faq">
+            <div class="sec-title">常见问题</div>
+            <div class="sec-sub">如有其他疑问，欢迎通过申请表单联系我们</div>
+            <div class="faq-wrap">{items_html}</div>
         </section>
         """,
         unsafe_allow_html=True,
@@ -971,6 +1188,9 @@ def main():
     render_advantages()
     render_cases()
     render_process()
+    render_scenarios()
+    render_comparison()
+    render_faq()
     render_contact()
     render_footer()
 

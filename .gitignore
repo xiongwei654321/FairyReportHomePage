@@ -1,0 +1,48 @@
+# ── Python ──────────────────────────────
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ── 虚拟环境 ────────────────────────────
+venv/
+.venv/
+env/
+ENV/
+
+# ── IDE / 编辑器 ────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# ── macOS ───────────────────────────────
+.DS_Store
+.DS_Store?*
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ── 数据库（含用户申请数据，勿提交）──────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── 敏感配置 ────────────────────────────
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# ── 日志 / 缓存 / 测试产物 ──────────────
+*.log
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/

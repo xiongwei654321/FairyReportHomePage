@@ -9,7 +9,7 @@ from database import init_db, insert_application
 # ─────────────────────────────────────────
 def set_page_config():
     st.set_page_config(
-        page_title="需求文档 · AI驱动的工程咨询报告编制系统",
+        page_title="FairyReport · AI驱动的工程咨询报告编制系统",
         page_icon="✦",
         layout="wide",
         initial_sidebar_state="collapsed",
@@ -528,7 +528,10 @@ def inject_global_css():
 
         /* ══ Hero 信任标签 ══ */
         .hero-trust {
-            margin-top: 20px;
+            margin-top: 36px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            display: inline-block;
             font-size: 13px;
             color: var(--gray);
             letter-spacing: 0.2px;
@@ -594,6 +597,62 @@ def inject_global_css():
             color: var(--dark);
         }
 
+        /* ══ 对比表移动端：table → 卡片堆叠 ══ */
+        @media (max-width: 640px) {
+            .cmp-wrap { border-radius: 0; border-left: none; border-right: none; }
+            .cmp-scroll { overflow-x: visible; }
+            .cmp-table, .cmp-table tbody { display: block; min-width: unset; width: 100%; }
+            .cmp-table thead { display: none; }
+            .cmp-table tbody tr {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                border-bottom: 1px solid var(--border);
+            }
+            .cmp-table tbody tr:last-child { border-bottom: none; }
+            .cmp-table tbody td {
+                display: block;
+                text-align: left;
+                border: none;
+                padding: 12px 16px;
+                font-size: 13px;
+                line-height: 1.65;
+                white-space: normal;
+            }
+            /* 维度名：独占一行 */
+            .cmp-table tbody td:first-child {
+                grid-column: 1 / -1;
+                background: var(--bg);
+                border-bottom: 1px solid var(--border);
+                border-right: none;
+                font-weight: 600;
+                font-size: 13px;
+                padding: 10px 16px;
+            }
+            /* 通用大模型 列：加小标签 */
+            .cmp-table tbody td:nth-child(2)::before {
+                content: "通用大模型";
+                display: block;
+                font-size: 11px;
+                font-weight: 500;
+                color: var(--gray);
+                margin-bottom: 5px;
+                letter-spacing: 0.3px;
+            }
+            .cmp-table tbody td:nth-child(2) {
+                border-right: 1px solid var(--border);
+            }
+            /* FairyReport 列：加小标签 */
+            .cmp-table tbody td.cmp-hl::before {
+                content: "✦ FairyReport";
+                display: block;
+                font-size: 11px;
+                font-weight: 600;
+                color: var(--brand);
+                margin-bottom: 5px;
+                letter-spacing: 0.3px;
+            }
+        }
+
         /* ══ FAQ ══ */
         .faq-wrap { max-width: 760px; margin: 0 auto; }
         .faq-item { border-bottom: 1px solid var(--border); padding: 28px 0; }
@@ -613,7 +672,7 @@ def render_nav():
     st.markdown(
         """
         <nav class="nav">
-            <a class="nav-logo" href="#">✦ 需求文档</a>
+            <a class="nav-logo" href="#">✦ FairyReport</a>
             <div class="nav-links">
                 <a href="#advantages">核心优势</a>
                 <a href="#cases">特色功能</a>
@@ -648,7 +707,7 @@ def render_hero():
             <span class="hero-tag">工程咨询行业首款 AI 报告编制平台 · 14 种法定报告类型</span>
             <h1>从<em>数周</em>到<em>数小时</em><br>工程咨询报告的智能革命</h1>
             <p>
-                需求文档 专为中国工程咨询行业打造，融合项目资料库、行业知识库与实时互联网三源信息，
+                FairyReport 专为中国工程咨询行业打造，融合项目资料库、行业知识库与实时互联网三源信息，
                 覆盖 14 种法定报告类型，AI 逐章编写、自动校验篇幅、保障全文逻辑自洽。
             </p>
             <div class="hero-btns">
@@ -674,7 +733,7 @@ def render_advantages():
         ("🔒", "全文逻辑自洽",
          "跨章方案锁定：比选结论一旦确定，后续章节禁止推翻；过期章节检测：前序修改后，后续章节自动标记「上下文过期」并级联提醒——从第一页到最后一页逻辑一致。"),
         ("⚡", "效率指数级跃升",
-         "传统流程需数周到数月；需求文档 五步向导：导入资料 → 确认大纲 → 逐章 AI 流式生成 → 人机审阅 → 一键导出 Word，数小时交付初稿，效率提升 10 倍以上。"),
+         "传统流程需数周到数月；FairyReport 五步向导：导入资料 → 确认大纲 → 逐章 AI 流式生成 → 人机审阅 → 一键导出 Word，数小时交付初稿，效率提升 10 倍以上。"),
     ]
     cards_html = "".join(
         f'<div class="adv-card adv-card-has-tip" data-tip-icon="{icon}" data-tip-title="{title}" data-tip="{desc}">'
@@ -1001,7 +1060,7 @@ def render_comparison():
                             <tr>
                                 <th>对比维度</th>
                                 <th>通用大模型</th>
-                                <th class="cmp-hl">✦ 需求文档
+                                <th class="cmp-hl">✦ FairyReport
                                     <br><span style="font-size:12px;font-weight:400;">专为工程咨询设计</span>
                                 </th>
                             </tr>
@@ -1024,7 +1083,7 @@ def render_scenarios():
         ("可行性研究报告",
          "省级能源基础设施项目",
          "编制团队 2 人，传统流程需 3～4 周反复修改，版本管理混乱，跨章数据不一致。",
-         "使用需求文档 2 天完成全文初稿，三源引用自动标注，跨章方案锁定确保前后一致，工程师审阅后顺利提交评审。",
+         "使用 FairyReport 2 天完成全文初稿，三源引用自动标注，跨章方案锁定确保前后一致，工程师审阅后顺利提交评审。",
          "交付周期缩短约 80%"),
         ("资金申请报告",
          "县级公共基础设施项目",
@@ -1067,7 +1126,7 @@ def render_scenarios():
 def render_faq():
     faqs = [
         ("生成的报告能直接提交评审吗？",
-         "需求文档定位是 AI 辅助编制工具，生成内容为专业初稿，需由具备资质的工程师审阅、核实数据并修改完善后，方可用于正式评审提交。我们不承诺评审通过结果，成果质量最终取决于工程师的专业判断。"),
+         "FairyReport 定位是 AI 辅助编制工具，生成内容为专业初稿，需由具备资质的工程师审阅、核实数据并修改完善后，方可用于正式评审提交。我们不承诺评审通过结果，成果质量最终取决于工程师的专业判断。"),
         ("项目资料上传后数据是否安全？",
          "我们支持私有化本地部署，数据完全不出内网，适配涉密项目需求。云端版本采用加密传输，项目文件仅用于本次报告编制，不用于模型训练或其他用途。"),
         ("目前支持哪些报告类型？",
@@ -1075,7 +1134,7 @@ def render_faq():
         ("需要安装软件或配置环境吗？",
          "不需要。云端版本直接通过浏览器访问，无需安装任何软件，开箱即用。如需私有化部署，我们提供完整的部署支持与技术文档。"),
         ("和直接使用 ChatGPT 等通用 AI 有什么区别？",
-         "通用大模型不了解工程咨询行业规范，无法保证章节结构合规、字数达标，且知识来源无法追溯。需求文档内置《决策评价_2024》等行业标准，三源知识引用均标注来源，跨章逻辑强制一致，专为工程报告编制场景设计。"),
+         "通用大模型不了解工程咨询行业规范，无法保证章节结构合规、字数达标，且知识来源无法追溯。FairyReport 内置《决策评价_2024》等行业标准，三源知识引用均标注来源，跨章逻辑强制一致，专为工程报告编制场景设计。"),
         ("如何申请试用？",
          "填写页面下方的申请表单，留下姓名和联系方式，我们将在 1 个工作日内与您联系，安排产品演示与试用账号。"),
     ]
@@ -1166,9 +1225,9 @@ def render_footer():
                 <a href="#process">工作流程</a>·
                 <a href="#contact">联系我们</a>
             </div>
-            <div>✦ 需求文档 &nbsp;·&nbsp; AI驱动的工程咨询报告编制系统</div>
+            <div>✦ FairyReport &nbsp;·&nbsp; AI驱动的工程咨询报告编制系统</div>
             <div style="margin-top:4px; font-size:12px;">
-                © 2026 需求文档. All rights reserved. &nbsp;·&nbsp; 无需安装，浏览器即可使用 · 支持私有化部署
+                © 2026 FairyReport. All rights reserved. &nbsp;·&nbsp; 无需安装，浏览器即可使用 · 支持私有化部署
             </div>
         </footer>
         """,

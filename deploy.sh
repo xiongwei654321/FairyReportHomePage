@@ -15,6 +15,8 @@ REMOTE_PASS="Xw123456"          # ⚠️ 初次部署后建议改为密钥认证
 REMOTE_DIR="/home/ubuntu/tech_inquire_web"
 APP_PORT="8502"
 SERVICE_NAME="streamlit-tech-inquire"
+ADMIN_PORT="8503"
+ADMIN_SERVICE_NAME="streamlit-tech-inquire-admin"
 # ────────────────────────────────────────────────────────────────
 
 GREEN='\033[0;32m'
@@ -130,14 +132,58 @@ SVCSSH
 
 ok "systemd 服务已启动"
 
+# ── Step 4：写入 Admin systemd 服务并启动 ────────────────────────
+step "配置 Admin 服务（${ADMIN_SERVICE_NAME}，端口 ${ADMIN_PORT}）"
+
+_ssh "${REMOTE_USER}@${REMOTE_IP}" bash <<ADMINSSH
+set -euo pipefail
+
+sudo tee /etc/systemd/system/${ADMIN_SERVICE_NAME}.service > /dev/null <<UNIT
+[Unit]
+Description=Streamlit Admin - tech_inquire_web (port ${ADMIN_PORT})
+After=network.target
+
+[Service]
+Type=simple
+User=${REMOTE_USER}
+WorkingDirectory=${REMOTE_DIR}
+ExecStart=${REMOTE_DIR}/venv/bin/streamlit run admin.py \\
+    --server.port ${ADMIN_PORT} \\
+    --server.address 0.0.0.0 \\
+    --server.headless true \\
+    --server.enableCORS false \\
+    --server.enableXsrfProtection false
+Restart=on-failure
+RestartSec=5s
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+sudo systemctl daemon-reload
+sudo systemctl enable "${ADMIN_SERVICE_NAME}"
+sudo systemctl restart "${ADMIN_SERVICE_NAME}"
+
+sleep 2
+echo ""
+echo "── Admin 服务状态 ──────────────────────────"
+systemctl status "${ADMIN_SERVICE_NAME}" --no-pager -l || true
+ADMINSSH
+
+ok "Admin 服务已启动"
+
 # ── 完成提示 ────────────────────────────────────────────────────
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "${GREEN}  部署完成！${NC}"
-echo "  访问地址：http://${REMOTE_IP}:${APP_PORT}"
+echo "  官网地址：http://${REMOTE_IP}:${APP_PORT}"
+echo "  管理后台：http://${REMOTE_IP}:${ADMIN_PORT}"
 echo ""
 echo "  常用远程命令："
-echo "  查看日志：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} journalctl -u ${SERVICE_NAME} -f"
-echo "  重启服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl restart ${SERVICE_NAME}"
-echo "  停止服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl stop ${SERVICE_NAME}"
+echo "  查看官网日志：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} journalctl -u ${SERVICE_NAME} -f"
+echo "  查看后台日志：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} journalctl -u ${ADMIN_SERVICE_NAME} -f"
+echo "  重启官网服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl restart ${SERVICE_NAME}"
+echo "  重启后台服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl restart ${ADMIN_SERVICE_NAME}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

@@ -8,7 +8,7 @@ from database import init_db, insert_application
 # ─────────────────────────────────────────
 def set_page_config():
     st.set_page_config(
-        page_title="FairyReport · 选择报告类型，立即体验",
+        page_title="新纪元数智 · 选择报告类型，立即体验",
         page_icon="✦",
         layout="wide",
         initial_sidebar_state="collapsed",
@@ -316,7 +316,7 @@ def render_nav():
     st.markdown(
         """
         <nav class="nav">
-            <a class="nav-logo" href="/">✦ FairyReport</a>
+            <a class="nav-logo" href="/">✦ 新纪元数智</a>
             <div class="nav-links">
                 <a href="/">首页</a>
                 <a href="/#advantages">核心优势</a>
@@ -478,7 +478,7 @@ def render_contact():
     st.markdown(
         """
         <section id="contact" style="background:#fff; padding: 56px 5% 32px; text-align:center;">
-            <div class="sec-title">申请体验 FairyReport</div>
+            <div class="sec-title">申请体验 新纪元数智</div>
             <div class="sec-sub" style="margin-bottom: 0;">
                 无需安装，浏览器即可使用 · 支持私有化部署 · 数据安全可控<br>
                 留下联系方式，我们将在 1 个工作日内与您联系
@@ -539,9 +539,9 @@ def render_footer():
                 <a href="/#cases">特色功能</a>·
                 <a href="#contact">联系我们</a>
             </div>
-            <div>✦ FairyReport &nbsp;·&nbsp; AI驱动的工程咨询报告编制系统</div>
+            <div>✦ 新纪元数智 &nbsp;·&nbsp; AI驱动的工程咨询报告编制系统</div>
             <div style="margin-top:4px; font-size:12px;">
-                © 2026 FairyReport. All rights reserved. &nbsp;·&nbsp; 无需安装，浏览器即可使用 · 支持私有化部署
+                © 2026 新纪元数智. All rights reserved. &nbsp;·&nbsp; 无需安装，浏览器即可使用 · 支持私有化部署
             </div>
         </footer>
         """,

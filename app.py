@@ -510,20 +510,58 @@ def inject_global_css():
             color: var(--gray) !important;
             font-weight: 500 !important;
         }
-        div[data-testid="stSelectbox"] > div > div[data-baseweb="select"] > div {
-            border: 1px solid #EAECF0 !important;
-            border-radius: 6px !important;
+        /* 全局覆盖 baseweb select / 下拉框为浅色 */
+        div[data-baseweb="select"],
+        div[data-baseweb="select"] > div,
+        div[data-baseweb="select"] > div > div,
+        div[data-baseweb="select"] > div > div > div,
+        div[data-baseweb="select"] > div > div > div > div,
+        div[data-baseweb="select"] input,
+        div[data-baseweb="select"] [role="combobox"],
+        div[data-baseweb="select"] [aria-haspopup="listbox"] {
             background: #FAFBFC !important;
+            background-color: #FAFBFC !important;
+            color: #111827 !important;
+            border-color: #EAECF0 !important;
+            border-radius: 6px !important;
             font-size: 14px !important;
-            color: #9CA3AF !important;
+            -webkit-text-fill-color: #111827 !important;
         }
-        div[data-testid="stSelectbox"] > div > div[data-baseweb="select"] > div > div > div {
+        /* placeholder 与未选中状态 */
+        div[data-baseweb="select"] input::placeholder,
+        div[data-baseweb="select"] [aria-selected="false"] {
             color: #9CA3AF !important;
+            -webkit-text-fill-color: #9CA3AF !important;
         }
-        div[data-testid="stSelectbox"] > div > div[data-baseweb="select"] > div:focus-within {
-            border-color: var(--brand) !important;
+        /* 下拉箭头 */
+        div[data-baseweb="select"] svg {
+            color: #6B7280 !important;
+        }
+        /* 下拉菜单面板：白色（portal 可能挂在 body 下） */
+        body div[data-baseweb="popover"],
+        body div[data-baseweb="popover"] > div,
+        body div[data-baseweb="popover"] > div > div,
+        body div[data-baseweb="popover"] > div > div > div,
+        body div[data-baseweb="menu"],
+        body div[data-baseweb="menu"] ul,
+        body div[data-baseweb="menu"] li,
+        body div[data-baseweb="menu"] div {
             background: #fff !important;
-            box-shadow: 0 0 0 2px rgba(24,84,255,.08) !important;
+            background-color: #fff !important;
+            color: #111827 !important;
+            border-color: #E5E7EB !important;
+            font-size: 14px !important;
+            -webkit-text-fill-color: #111827 !important;
+        }
+        /* 选项 hover / 选中 */
+        body div[data-baseweb="menu"] li:hover,
+        body div[data-baseweb="menu"] li[aria-selected="true"],
+        body div[data-baseweb="menu"] li:hover > div,
+        body div[data-baseweb="menu"] li[aria-selected="true"] > div {
+            background: #EEF2FF !important;
+            background-color: #EEF2FF !important;
+            color: #1854FF !important;
+            -webkit-text-fill-color: #1854FF !important;
         }
 
         /* ══ Hero 信任标签 ══ */
@@ -1163,7 +1201,8 @@ def render_faq():
 def render_contact():
     st.markdown(
         """
-        <section id="contact" style="background:#fff; padding: 56px 5% 32px; text-align:center;">
+        <div style="height:36px;background:linear-gradient(to bottom, var(--bg), #fff);"></div>
+        <section id="contact" style="background:#fff; padding: 40px 5% 28px; text-align:center;">
             <div class="sec-title">申请免费试用</div>
             <div class="sec-sub" style="margin-bottom: 0;">
                 无需安装，浏览器即可使用 · 支持私有化部署 · 数据安全可控<br>
@@ -1228,6 +1267,9 @@ def render_footer():
             <div>✦ 新纪元数智 &nbsp;·&nbsp; AI驱动的工程咨询报告编制系统</div>
             <div style="margin-top:4px; font-size:12px;">
                 © 2026 新纪元数智. All rights reserved. &nbsp;·&nbsp; 无需安装，浏览器即可使用 · 支持私有化部署
+            </div>
+            <div style="margin-top:6px; font-size:12px;">
+                <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026057726号</a>
             </div>
         </footer>
         """,

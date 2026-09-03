@@ -9,9 +9,9 @@
 set -euo pipefail
 
 # ── 配置区（按需修改）────────────────────────────────────────────
-REMOTE_IP="119.45.38.169"
+REMOTE_IP="82.157.244.30"
 REMOTE_USER="ubuntu"
-REMOTE_PASS="Xw123456"          # ⚠️ 初次部署后建议改为密钥认证
+REMOTE_PASS="Xw@635260316"       # ⚠️ 初次部署后建议改为密钥认证
 REMOTE_DIR="/home/ubuntu/tech_inquire_web"
 APP_PORT="8502"
 SERVICE_NAME="streamlit-tech-inquire"
@@ -50,6 +50,9 @@ ok "sshpass 已就绪"
 
 # ── Step 1：同步项目文件 ─────────────────────────────────────────
 step "同步项目文件到服务器 ${REMOTE_USER}@${REMOTE_IP}:${REMOTE_DIR}"
+
+# 新装系统可能缺少 rsync（文件同步依赖它），先确保远端可用
+_ssh "${REMOTE_USER}@${REMOTE_IP}" "sudo apt-get update -qq && sudo apt-get install -y rsync"
 
 # 确保远端目录存在
 _ssh "${REMOTE_USER}@${REMOTE_IP}" "mkdir -p ${REMOTE_DIR}"

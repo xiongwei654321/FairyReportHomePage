@@ -663,6 +663,9 @@ def render_footer():
             <div style="margin-top:4px; font-size:12px;">
                 © 2026 新纪元数智. All rights reserved.
             </div>
+            <div style="margin-top:6px; font-size:12px;">
+                <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">京ICP备2026057726号</a>
+            </div>
         </footer>
         """,
         unsafe_allow_html=True,

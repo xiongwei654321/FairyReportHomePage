@@ -35,7 +35,7 @@ def inject_global_css():
         /* ══════════════════════════════════════
            1. 隐藏 Streamlit 默认 UI
         ══════════════════════════════════════ */
-        #MainMenu, footer, header,
+        #MainMenu, footer:not(.site-footer), header,
         [data-testid="stToolbar"], [data-testid="stDecoration"],
         [data-testid="stStatusWidget"], [data-testid="collapsedControl"],
         .stDeployButton { display: none !important; }

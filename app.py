@@ -24,11 +24,12 @@ def inject_global_css():
         """
         <style>
         /* ══ 隐藏 Streamlit 默认元素 ══ */
-        #MainMenu, footer, header,
+        #MainMenu, footer:not(.site-footer), header,
         [data-testid="stToolbar"],
         [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],
         [data-testid="collapsedControl"],
+        [data-testid="stBottom"],
         .stDeployButton { display: none !important; visibility: hidden !important; }
 
         /* ══ 消除 Streamlit 容器默认边距 ══ */
@@ -178,31 +179,29 @@ def inject_global_css():
             line-height: 1.75;
         }
         .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-        .btn-primary {
-            background: var(--brand);
-            color: #fff;
-            padding: 12px 28px;
-            border-radius: 6px;
-            font-size: 15px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: background .15s;
+        a.btn-primary, a.btn-outline {
             display: inline-block;
-        }
-        .btn-primary:hover { background: var(--brand-dk); color: #fff; }
-        .btn-outline {
-            background: transparent;
-            color: var(--brand);
             padding: 12px 28px;
             border-radius: 6px;
-            font-size: 15px;
+            font-size: 15px !important;
             font-weight: 500;
-            text-decoration: none;
+            text-decoration: none !important;
             border: 1.5px solid var(--brand);
-            transition: background .15s;
-            display: inline-block;
+            line-height: 1.5;
+            transition: background .15s, border-color .15s;
+            min-width: 180px;
+            text-align: center;
         }
-        .btn-outline:hover { background: var(--brand-bg); }
+        a.btn-primary {
+            background: var(--brand);
+            color: #fff !important;
+        }
+        a.btn-primary:hover { background: var(--brand-dk); border-color: var(--brand-dk); }
+        a.btn-outline {
+            background: transparent;
+            color: var(--brand) !important;
+        }
+        a.btn-outline:hover { background: var(--brand-bg); }
 
         /* ══ Section 通用 ══ */
         .section    { padding: 80px 5%; }

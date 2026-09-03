@@ -23,7 +23,7 @@ def inject_global_css():
         """
         <style>
         /* ══ 隐藏 Streamlit 默认元素 ══ */
-        #MainMenu, footer, header,
+        #MainMenu, footer:not(.site-footer), header,
         [data-testid="stToolbar"],
         [data-testid="stDecoration"],
         [data-testid="stStatusWidget"],

@@ -1,6 +1,6 @@
 #!/bin/bash
 # ================================================================
-#  deploy.sh — 一键部署 Streamlit 应用到腾讯云 Ubuntu 服务器
+#  deploy.sh — 一键部署 Flask 应用到腾讯云 Ubuntu 服务器
 #  本地执行：bash deploy.sh
 #
 #  ⚠️  安全提示：密码明文存于脚本，仅用于初次部署。
@@ -14,9 +14,7 @@ REMOTE_USER="ubuntu"
 REMOTE_PASS="Xw@635260316"       # ⚠️ 初次部署后建议改为密钥认证
 REMOTE_DIR="/home/ubuntu/tech_inquire_web"
 APP_PORT="8502"
-SERVICE_NAME="streamlit-tech-inquire"
-ADMIN_PORT="8503"
-ADMIN_SERVICE_NAME="streamlit-tech-inquire-admin"
+SERVICE_NAME="flask-tech-inquire"
 # ────────────────────────────────────────────────────────────────
 
 GREEN='\033[0;32m'
@@ -57,14 +55,17 @@ _ssh "${REMOTE_USER}@${REMOTE_IP}" "sudo apt-get update -qq && sudo apt-get inst
 # 确保远端目录存在
 _ssh "${REMOTE_USER}@${REMOTE_IP}" "mkdir -p ${REMOTE_DIR}"
 
-_rsync -avz --progress \
+_rsync -avz --progress --delete \
     --exclude='.git' \
     --exclude='.claude' \
     --exclude='__pycache__' \
     --exclude='*.pyc' \
     --exclude='*.DS_Store' \
     --exclude='venv' \
+    --exclude='.venv' \
     --exclude='deploy.sh' \
+    --exclude='applications.db' \
+    --exclude='需求文档' \
     ./ "${REMOTE_USER}@${REMOTE_IP}:${REMOTE_DIR}/"
 
 ok "文件同步完成"
@@ -93,7 +94,32 @@ ENVSSH
 
 ok "依赖安装完成"
 
-# ── Step 3：写入 systemd 服务并启动 ─────────────────────────────
+# ── Step 3：停止旧 Streamlit 服务（如果存在）────────────────────
+step "停止旧服务（如果存在）"
+
+_ssh "${REMOTE_USER}@${REMOTE_IP}" bash <<STOPSSH
+set -euo pipefail
+# 停止旧 Streamlit 服务并删除 service 文件
+for svc in streamlit-tech-inquire streamlit-tech-inquire-admin; do
+    if systemctl is-active --quiet "\$svc" 2>/dev/null; then
+        echo "  → 停止 \$svc"
+        sudo systemctl stop "\$svc"
+        sudo systemctl disable "\$svc"
+    fi
+    if [ -f "/etc/systemd/system/\${svc}.service" ]; then
+        echo "  → 删除 \${svc}.service"
+        sudo rm -f "/etc/systemd/system/\${svc}.service"
+    fi
+done
+sudo systemctl daemon-reload
+# 清理远端残留的旧 Streamlit 文件
+rm -rf "${REMOTE_DIR}/pages" "${REMOTE_DIR}/admin.py" "${REMOTE_DIR}/.streamlit"
+echo "✓ 旧服务与文件已清理"
+STOPSSH
+
+ok "旧服务已清理"
+
+# ── Step 4：写入 systemd 服务并启动 ─────────────────────────────
 step "配置 systemd 服务（${SERVICE_NAME}，端口 ${APP_PORT}）"
 
 _ssh "${REMOTE_USER}@${REMOTE_IP}" bash <<SVCSSH
@@ -101,19 +127,18 @@ set -euo pipefail
 
 sudo tee /etc/systemd/system/${SERVICE_NAME}.service > /dev/null <<UNIT
 [Unit]
-Description=Streamlit App - tech_inquire_web (port ${APP_PORT})
+Description=Flask App - tech_inquire_web (port ${APP_PORT})
 After=network.target
 
 [Service]
 Type=simple
 User=${REMOTE_USER}
 WorkingDirectory=${REMOTE_DIR}
-ExecStart=${REMOTE_DIR}/venv/bin/streamlit run app.py \\
-    --server.port ${APP_PORT} \\
-    --server.address 0.0.0.0 \\
-    --server.headless true \\
-    --server.enableCORS false \\
-    --server.enableXsrfProtection false
+ExecStart=${REMOTE_DIR}/venv/bin/gunicorn \\
+    --bind 0.0.0.0:${APP_PORT} \\
+    --workers 2 \\
+    --timeout 120 \\
+    app:app
 Restart=on-failure
 RestartSec=5s
 StandardOutput=journal
@@ -135,58 +160,14 @@ SVCSSH
 
 ok "systemd 服务已启动"
 
-# ── Step 4：写入 Admin systemd 服务并启动 ────────────────────────
-step "配置 Admin 服务（${ADMIN_SERVICE_NAME}，端口 ${ADMIN_PORT}）"
-
-_ssh "${REMOTE_USER}@${REMOTE_IP}" bash <<ADMINSSH
-set -euo pipefail
-
-sudo tee /etc/systemd/system/${ADMIN_SERVICE_NAME}.service > /dev/null <<UNIT
-[Unit]
-Description=Streamlit Admin - tech_inquire_web (port ${ADMIN_PORT})
-After=network.target
-
-[Service]
-Type=simple
-User=${REMOTE_USER}
-WorkingDirectory=${REMOTE_DIR}
-ExecStart=${REMOTE_DIR}/venv/bin/streamlit run admin.py \\
-    --server.port ${ADMIN_PORT} \\
-    --server.address 0.0.0.0 \\
-    --server.headless true \\
-    --server.enableCORS false \\
-    --server.enableXsrfProtection false
-Restart=on-failure
-RestartSec=5s
-StandardOutput=journal
-StandardError=journal
-
-[Install]
-WantedBy=multi-user.target
-UNIT
-
-sudo systemctl daemon-reload
-sudo systemctl enable "${ADMIN_SERVICE_NAME}"
-sudo systemctl restart "${ADMIN_SERVICE_NAME}"
-
-sleep 2
-echo ""
-echo "── Admin 服务状态 ──────────────────────────"
-systemctl status "${ADMIN_SERVICE_NAME}" --no-pager -l || true
-ADMINSSH
-
-ok "Admin 服务已启动"
-
 # ── 完成提示 ────────────────────────────────────────────────────
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "${GREEN}  部署完成！${NC}"
 echo "  官网地址：http://${REMOTE_IP}:${APP_PORT}"
-echo "  管理后台：http://${REMOTE_IP}:${ADMIN_PORT}"
+echo "  管理后台：http://${REMOTE_IP}:${APP_PORT}/admin"
 echo ""
 echo "  常用远程命令："
-echo "  查看官网日志：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} journalctl -u ${SERVICE_NAME} -f"
-echo "  查看后台日志：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} journalctl -u ${ADMIN_SERVICE_NAME} -f"
-echo "  重启官网服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl restart ${SERVICE_NAME}"
-echo "  重启后台服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl restart ${ADMIN_SERVICE_NAME}"
+echo "  查看日志：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} journalctl -u ${SERVICE_NAME} -f"
+echo "  重启服务：sshpass -p '${REMOTE_PASS}' ssh ${REMOTE_USER}@${REMOTE_IP} sudo systemctl restart ${SERVICE_NAME}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

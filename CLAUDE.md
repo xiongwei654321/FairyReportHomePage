@@ -3,7 +3,7 @@
 ## 项目概述
 
 **需求文档（FairyReport）** 的官网落地页，用于产品展示与试用申请收集。
-这是一个 Streamlit 多页应用，对外表现为极简商务风格的产品官网，并通过 SQLite 存储访客申请信息。
+这是一个 Flask 应用，对外表现为极简商务风格的产品官网，并通过 SQLite 存储访客申请信息。
 
 产品本身（非本仓库）是一个面向中国工程咨询行业的 AI 报告编制系统，覆盖 14 种法定报告类型。
 
@@ -13,10 +13,11 @@
 
 | 层次 | 技术 |
 |------|------|
-| 框架 | Python + Streamlit >= 1.35.0 |
+| 框架 | Python + Flask >= 3.0.0 |
 | 数据库 | SQLite（本地文件 `applications.db`） |
-| 前端样式 | 纯 CSS（通过 `st.markdown(unsafe_allow_html=True)` 注入） |
-| 部署 | 腾讯云 Ubuntu，systemd 服务，端口 8502 |
+| 前端样式 | 纯 CSS（独立 .css 文件） + Jinja2 模板 |
+| JS | 原生 JavaScript（汉堡菜单 + Tooltip） |
+| 部署 | 腾讯云 Ubuntu，gunicorn + systemd 服务，端口 8502 |
 
 ---
 
@@ -24,14 +25,32 @@
 
 ```
 FairyReportHomePage/
-├── app.py               # 首页（主入口）
-├── database.py          # SQLite 数据库操作
-├── requirements.txt     # 依赖：streamlit>=1.35.0
-├── deploy.sh            # 一键部署脚本（rsync + systemd）
-├── applications.db      # 运行时生成，存储申请记录
-├── pages/
-│   └── trial.py         # /trial 子页：选择报告类型 + 申请表单
-└── 需求文档/             # 产品参考资料（不部署）
+├── app.py                          # Flask 应用入口 + 路由
+├── database.py                     # SQLite CRUD
+├── requirements.txt                # flask, gunicorn
+├── deploy.sh                       # 一键部署脚本（rsync + systemd）
+├── applications.db                 # 运行时生成，存储申请记录
+├── static/
+│   ├── css/
+│   │   ├── base.css                # 公共样式：CSS 变量、reset、导航、表单、页脚
+│   │   ├── home.css                # 首页专属：优势卡片、流程、对比表、FAQ
+│   │   ├── trial.css               # 体验页专属：统计栏、模块卡片
+│   │   └── admin.css               # 管理后台专属：表格、按钮、分页
+│   └── js/
+│       └── main.js                 # 汉堡菜单 + 优势卡片 tooltip
+├── templates/
+│   ├── base.html                   # HTML 骨架（head、block 定义）
+│   ├── base_public.html            # 继承 base，加载公共导航 + 页脚 + JS
+│   ├── components/
+│   │   ├── nav_public.html         # 公共导航栏（参数化链接）
+│   │   ├── nav_admin.html          # 管理后台导航
+│   │   ├── footer_public.html      # 公共页脚
+│   │   ├── footer_admin.html       # 管理后台页脚
+│   │   └── contact_form.html       # 共享申请表单（参数化标题和来源）
+│   ├── home.html                   # 首页（extends base_public）
+│   ├── trial.html                  # 体验页（extends base_public）
+│   └── admin.html                  # 管理后台（extends base）
+└── 需求文档/                       # 产品参考资料（不部署）
     ├── AI驱动的工程咨询报告编制系统.md
     ├── 修改建议.md
     └── *.pdf / *.docx
@@ -39,23 +58,43 @@ FairyReportHomePage/
 
 ---
 
+## 路由
+
+| 路由 | 方法 | 用途 |
+|------|------|------|
+| `/` | GET | 首页 |
+| `/trial` | GET | 体验页 |
+| `/submit` | POST | 表单提交（首页 + 体验页共用） |
+| `/admin` | GET | 管理后台（query params: page, edit_id, confirm_id） |
+| `/admin/update` | POST | 保存编辑记录 |
+| `/admin/delete` | POST | 删除记录 |
+
+---
+
 ## 页面结构
 
-### 首页 `app.py`
+### 首页 `/`
 
-渲染顺序：
+渲染顺序（`templates/home.html`）：
 
-1. `render_nav()` — 顶部粘性导航栏（带移动端汉堡菜单）
-2. `render_hero()` — 首屏 Hero，主 slogan + CTA 按钮
-3. `render_advantages()` — 核心优势（4 列卡片，桌面/移动端悬浮 tooltip）
-4. `render_cases()` — 六大特色功能（3 列卡片）
-5. `render_process()` — 五步工作流程（横向步骤 + 连接线）
-6. `render_contact()` — 申请免费试用表单（Streamlit 原生 form → SQLite）
-7. `render_footer()` — 深色页脚
+1. 导航栏（带移动端汉堡菜单）
+2. 首屏 Hero，主 slogan + CTA 按钮
+3. 核心优势（4 列卡片，桌面/移动端悬浮 tooltip）
+4. 六大特色功能（3 列卡片）
+5. 五步工作流程（横向步骤 + 连接线）
+6. 典型使用场景（3 列案例卡片）
+7. 对比表（与通用 AI 差异化）
+8. 常见问题（FAQ）
+9. 申请免费试用表单（原生 HTML form → SQLite）
+10. 深色页脚
 
-### 体验页 `pages/trial.py`（路由 `/trial`）
+### 体验页 `/trial`
 
-渲染顺序：导航栏 → Hero → 数据统计栏 → 报告模块卡片（7个）→ 申请表单 → 页脚
+渲染顺序（`templates/trial.html`）：导航栏 → Hero → 数据统计栏 → 报告模块卡片（7个）→ 申请表单 → 页脚
+
+### 管理后台 `/admin`
+
+渲染顺序（`templates/admin.html`）：导航栏 → 标题栏 → 数据表格（含编辑/删除行内操作）→ 分页 → 页脚
 
 ---
 
@@ -92,16 +131,18 @@ FairyReportHomePage/
 
 **字体**：`system-ui, -apple-system, "PingFang SC", "Noto Sans SC", sans-serif`
 
-**设计风格**：极简留白，商务干净，无渐变、无弹窗、无复杂动效。Streamlit 默认 UI 元素（工具栏、侧边栏等）全部通过 CSS 隐藏。
+**设计风格**：极简留白，商务干净，无渐变、无弹窗、无复杂动效。
 
 ---
 
 ## 本地运行
 
 ```bash
-pip install streamlit>=1.35.0
-streamlit run app.py
+pip install flask gunicorn
+python app.py
 ```
+
+访问 `http://localhost:8502`
 
 ---
 
@@ -114,10 +155,11 @@ bash deploy.sh
 脚本执行步骤：
 1. 通过 `rsync` 同步文件到腾讯云服务器（排除 `.git`、`venv`、`deploy.sh` 等）
 2. 远程创建 Python venv 并安装依赖
-3. 写入 systemd 服务文件并启动
+3. 停止旧 Streamlit 服务（如果存在）
+4. 写入 gunicorn systemd 服务文件并启动
 
 **服务信息**：
-- 服务名：`streamlit-tech-inquire`
+- 服务名：`flask-tech-inquire`
 - 端口：`8502`
 - 远程目录：`/home/ubuntu/tech_inquire_web`
 
@@ -127,7 +169,7 @@ bash deploy.sh
 
 ## 待办改进方向（来自需求文档/修改建议.md）
 
-- [ ] 补充与通用大模型的差异化对比
-- [ ] 添加脱敏后的落地案例
-- [ ] 页面底部增加常见问题（FAQ）模块
+- [x] 补充与通用大模型的差异化对比
+- [x] 添加脱敏后的落地案例
+- [x] 页面底部增加常见问题（FAQ）模块
 - [ ] 为产品考虑中文品牌名称

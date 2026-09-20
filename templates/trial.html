@@ -1,0 +1,62 @@
+{% extends "base_public.html" %}
+
+{% block title %}新纪元数智 · 选择报告类型，立即体验{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trial.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero trial-hero">
+    <span class="hero-tag">14 种法定报告类型 · 21 类工程专业 · 严格对标行业规范</span>
+    <h1>选择报告类型，<em>立即开始</em>生成</h1>
+    <p>
+        严格对标《决策评价_2024》行业规范，每种报告都有预定义的章节骨架与字数预算，
+        覆盖可行性研究、项目评估、发展规划等工程咨询全场景。
+    </p>
+</section>
+
+<!-- 数据统计栏 -->
+<div class="stat-bar">
+    <div class="stat-item">
+        <div class="stat-num">14</div>
+        <div class="stat-label">报告类型</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">21</div>
+        <div class="stat-label">工程专业</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">50</div>
+        <div class="stat-label">鼓励类产业</div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-num">10x</div>
+        <div class="stat-label">效率提升</div>
+    </div>
+</div>
+
+<!-- 报告模块卡片 -->
+<section class="section sec-gray" id="modules">
+    <div class="sec-title">选择报告类型</div>
+    <div class="sec-sub">覆盖 14 种法定报告类型，严格对标国家规范，每种报告预定义章节骨架与字数预算</div>
+    <div class="module-grid">
+        {% for m in modules %}
+        <div class="module-card{{ ' coming' if m.tag_class == 'soon' else '' }}">
+            <span class="module-tag {{ m.tag_class }}">{{ m.tag }}</span>
+            <h3>{{ m.title }}</h3>
+            <p>{{ m.desc }}</p>
+            <div class="module-meta">
+                <span class="module-users">{{ m.users }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 申请表单 -->
+{% set form_title = "申请体验 新纪元数智" %}
+{% set form_source = "trial" %}
+{% include "components/contact_form.html" %}
+{% endblock %}

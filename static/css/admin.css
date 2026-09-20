@@ -1,0 +1,320 @@
+/* ══ Admin-specific variables ══ */
+:root {
+    --bg-hd:      #F1F3F9;
+    --danger:     #EF4444;
+    --danger-lt:  #FECACA;
+    --danger-bg:  #FEF2F2;
+    --shadow-sm:  0 1px 3px rgba(0,0,0,.06);
+}
+
+/* ══ Admin 导航栏 ══ */
+.nav.admin-nav {
+    padding: 0;
+}
+.nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    width: 100%;
+}
+.nav-back {
+    font-size: 13px;
+    color: var(--gray-lt);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid transparent;
+    transition: all .15s;
+}
+.nav-back:hover {
+    color: var(--brand);
+    border-color: var(--brand-bg);
+    background: var(--brand-bg);
+}
+
+@media (max-width: 768px) {
+    .nav-inner { padding: 0 20px; }
+}
+
+/* ══ 页面内容容器 ══ */
+.admin-body {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 40px 48px 80px;
+}
+@media (max-width: 768px) { .admin-body { padding: 24px 20px 60px; } }
+
+/* ══ 标题栏 ══ */
+.admin-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+.admin-title {
+    font-size: clamp(20px, 2.5vw, 26px);
+    font-weight: 700;
+    color: var(--dark);
+    letter-spacing: -0.4px;
+}
+.record-badge {
+    font-size: 12px;
+    color: var(--brand);
+    background: var(--brand-bg);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 500;
+}
+
+/* ══ 表格容器 ══ */
+.tbl-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+}
+
+/* ══ 表格 ══ */
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+.admin-table thead th {
+    background: var(--bg-hd);
+    border-bottom: 1.5px solid var(--border);
+    padding: 0 20px;
+    height: 44px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray);
+    letter-spacing: .3px;
+    text-align: left;
+    white-space: nowrap;
+}
+.admin-table thead th:last-child {
+    text-align: center;
+}
+.admin-table tbody tr {
+    transition: background .1s;
+}
+.admin-table tbody tr:hover {
+    background: #F5F7FF;
+}
+.admin-table tbody tr + tr {
+    border-top: 1px solid var(--border);
+}
+.admin-table tbody td {
+    padding: 12px 20px;
+    font-size: 14px;
+    color: var(--dark);
+    line-height: 1.4;
+    vertical-align: middle;
+}
+
+.td-id   { font-size: 12px; color: var(--gray-lt); }
+.td-mono { font-variant-numeric: tabular-nums; letter-spacing: .4px; white-space: nowrap; }
+.td-time { font-size: 12px; color: var(--gray); white-space: nowrap; }
+.td-muted { color: var(--gray-lt); }
+
+/* ══ 编辑行 ══ */
+.row-editing {
+    background: #F8F9FF;
+}
+.row-editing:hover {
+    background: #F8F9FF;
+}
+.row-editing td {
+    padding: 8px 20px;
+}
+.edit-input {
+    width: 100%;
+    padding: 6px 10px;
+    font-size: 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    outline: none;
+    color: var(--dark);
+    background: #fff;
+    font-family: inherit;
+    transition: border-color .15s;
+}
+.edit-input:focus {
+    border-color: var(--brand);
+}
+
+/* ══ 删除确认行 ══ */
+.row-deleting {
+    background: var(--danger-bg);
+}
+.row-deleting:hover {
+    background: var(--danger-bg);
+}
+.td-del  { color: #C4C9D4; text-decoration: line-through; }
+.td-warn { font-size: 13px; color: var(--danger); font-weight: 500; }
+
+/* ══ 操作按钮 ══ */
+.action-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    white-space: nowrap;
+}
+.btn-sm {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 4px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all .15s;
+    line-height: 1.6;
+}
+.btn-edit {
+    background: var(--brand-bg);
+    color: var(--brand);
+}
+.btn-edit:hover {
+    background: var(--brand);
+    color: #fff;
+}
+.btn-delete {
+    background: var(--danger-bg);
+    color: var(--danger);
+    border-color: var(--danger-lt);
+}
+.btn-delete:hover {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+.btn-save {
+    background: var(--brand);
+    color: #fff;
+    border-color: var(--brand);
+}
+.btn-save:hover {
+    background: var(--brand-dk);
+}
+.btn-cancel {
+    background: #fff;
+    color: var(--gray);
+    border-color: var(--border);
+}
+.btn-cancel:hover {
+    background: var(--bg);
+}
+.btn-confirm-del {
+    background: var(--danger);
+    color: #fff;
+    border-color: var(--danger);
+}
+.btn-confirm-del:hover {
+    background: #DC2626;
+}
+
+/* ══ 空状态 ══ */
+.empty-state {
+    padding: 72px 0;
+    text-align: center;
+    color: var(--gray-lt);
+    font-size: 14px;
+}
+
+/* ══ 分页 ══ */
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 12px;
+}
+.page-info {
+    font-size: 13px;
+    color: var(--gray);
+}
+.page-btn {
+    display: inline-block;
+    background: #fff;
+    color: var(--brand);
+    border: 1.5px solid var(--brand);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 18px;
+    text-decoration: none;
+    transition: all .15s;
+    cursor: pointer;
+    font-family: inherit;
+}
+.page-btn:hover {
+    background: var(--brand-bg);
+}
+.page-btn.disabled {
+    cursor: not-allowed;
+    background: var(--bg);
+    color: #D1D5DB;
+    border-color: var(--border);
+    pointer-events: none;
+}
+
+/* ══ Admin 页脚 ══ */
+.site-footer.admin-footer {
+    padding: 32px 48px;
+}
+
+/* ══ 手机端适配 ══ */
+@media (max-width: 768px) {
+    /* 隐藏桌面表头 */
+    .admin-table thead { display: none; }
+
+    .admin-table,
+    .admin-table tbody,
+    .admin-table tr,
+    .admin-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-table tbody tr {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .admin-table tbody td {
+        padding: 3px 0;
+        font-size: 13px;
+    }
+
+    /* 隐藏序号、公司、报告类型、提交时间 */
+    .admin-table tbody td.col-id,
+    .admin-table tbody td.col-company,
+    .admin-table tbody td.col-report,
+    .admin-table tbody td.col-time {
+        display: none;
+    }
+
+    .admin-table tbody td.col-actions {
+        margin-top: 8px;
+    }
+
+    .action-btns {
+        justify-content: flex-start;
+    }
+
+    /* 编辑行 */
+    .row-editing td {
+        padding: 4px 0;
+    }
+    .row-editing td.col-id { display: none; }
+}

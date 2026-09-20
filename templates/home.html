@@ -1,0 +1,135 @@
+{% extends "base_public.html" %}
+
+{% block title %}新纪元数智 · AI驱动的工程咨询报告编制系统{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+    <span class="hero-tag">工程咨询行业首款 AI 报告编制平台 · 14 种法定报告类型</span>
+    <h1>从<em>数周</em>到<em>数小时</em><br>工程咨询报告的智能革命</h1>
+    <p>
+        新纪元数智 专为中国工程咨询行业打造，融合项目资料库、行业知识库与实时互联网三源信息，
+        覆盖 14 种法定报告类型，AI 逐章编写、自动校验篇幅、保障全文逻辑自洽。
+    </p>
+    <div class="hero-btns">
+        <a class="btn-primary" href="/trial">立即体验</a>
+        <a class="btn-outline" href="#cases">了解六大特色功能</a>
+    </div>
+    <p class="hero-trust">🔒 支持私有化本地部署 &nbsp;·&nbsp; 数据不出内网 &nbsp;·&nbsp; 适配涉密项目</p>
+</section>
+
+<!-- 核心优势 -->
+<section class="section sec-white" id="advantages">
+    <div class="sec-title">核心优势</div>
+    <div class="sec-sub">不是通用 AI 套壳，而是深度垂直于工程咨询行业的专业系统</div>
+    <div class="adv-grid">
+        {% for icon, title, desc in advantages %}
+        <div class="adv-card adv-card-has-tip" data-tip-icon="{{ icon }}" data-tip-title="{{ title }}" data-tip="{{ desc }}">
+            <div class="adv-icon">{{ icon }}</div>
+            <h3>{{ title }}</h3>
+            <p>{{ desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 六大特色功能 -->
+<section class="section sec-gray" id="cases">
+    <div class="sec-title">六大特色功能</div>
+    <div class="sec-sub">针对工程咨询报告的独特需求设计的六项专有机制——确保报告引用真实、逻辑自洽、篇幅精准</div>
+    <div class="adv-grid-3">
+        {% for icon, title, desc in features %}
+        <div class="adv-card">
+            <div class="adv-icon">{{ icon }}</div>
+            <h3>{{ title }}</h3>
+            <p>{{ desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 五步工作流程 -->
+<section class="section sec-white" id="process">
+    <div class="sec-title">五步工作流程</div>
+    <div class="sec-sub">无需学习复杂操作，五步向导式工作流，从资料到成稿，全程向导化</div>
+    <div class="process-wrap">
+        {% for title, desc in steps %}
+        <div class="process-item">
+            <div class="process-num">{{ loop.index }}</div>
+            <h4>{{ title }}</h4>
+            <p>{{ desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 典型使用场景 -->
+<section class="section sec-gray" id="scenarios">
+    <div class="sec-title">典型使用场景</div>
+    <div class="sec-sub">以下为典型业务场景示意，实际效果因项目复杂度与工程师专业判断而有所不同</div>
+    <div class="case-grid">
+        {% for rtype, title, pain, solution, result in scenarios %}
+        <div class="case-card">
+            <span class="case-tag">{{ rtype }}</span>
+            <h3>{{ title }}</h3>
+            <p><strong style="color:var(--dark);font-size:13px;">痛点：</strong>{{ pain }}</p>
+            <p style="margin-top:10px;">{{ solution }}</p>
+            <div class="case-result">→ {{ result }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 对比表 -->
+<section class="section sec-white" id="comparison">
+    <div class="sec-title">为什么不直接用通用 AI？</div>
+    <div class="sec-sub">通用大模型解决不了工程咨询报告的核心问题——行业规范合规、引用可追溯、全文逻辑自洽</div>
+    <div class="cmp-wrap">
+        <div class="cmp-scroll">
+            <table class="cmp-table">
+                <thead>
+                    <tr>
+                        <th>对比维度</th>
+                        <th>通用大模型</th>
+                        <th class="cmp-hl">✦ 新纪元数智
+                            <br><span style="font-size:12px;font-weight:400;">专为工程咨询设计</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dim, col1, col2 in comparisons %}
+                    <tr>
+                        <td>{{ dim }}</td>
+                        <td>{{ col1 }}</td>
+                        <td class="cmp-hl">{{ col2|safe }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="section sec-gray" id="faq">
+    <div class="sec-title">常见问题</div>
+    <div class="sec-sub">如有其他疑问，欢迎通过申请表单联系我们</div>
+    <div class="faq-wrap">
+        {% for q, a in faqs %}
+        <div class="faq-item">
+            <div class="faq-q">Q：{{ q }}</div>
+            <div class="faq-a">{{ a }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- 申请表单 -->
+{% set form_title = "申请免费试用" %}
+{% set form_source = "homepage" %}
+{% include "components/contact_form.html" %}
+{% endblock %}

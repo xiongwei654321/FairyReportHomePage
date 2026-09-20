@@ -1,0 +1,48 @@
+<div style="height:36px;background:linear-gradient(to bottom, var(--bg), #fff);"></div>
+<section id="contact" style="background:#fff; padding: 40px 5% 28px; text-align:center;">
+    <div class="sec-title">{{ form_title }}</div>
+    <div class="sec-sub" style="margin-bottom: 0;">
+        无需安装，浏览器即可使用 · 支持私有化部署 · 数据安全可控<br>
+        留下联系方式，我们将在 1 个工作日内与您联系
+    </div>
+</section>
+<div style="height:28px;background:#fff;"></div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+    <div class="flash-msg {{ category }}" id="flashMsg">{{ message }}</div>
+    {% endfor %}
+{% endwith %}
+
+<div style="background:#fff; padding: 0 5% 72px;">
+    <form class="contact-wrap" method="POST" action="/submit">
+        <input type="hidden" name="source" value="{{ form_source }}">
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label">您的姓名 *</label>
+                <input class="form-input" type="text" name="name" placeholder="请输入姓名" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">联系手机 *</label>
+                <input class="form-input" type="tel" name="phone" placeholder="请输入手机号" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">公司名称（选填）</label>
+            <input class="form-input" type="text" name="company" placeholder="请输入公司名称">
+        </div>
+        <div class="form-group">
+            <label class="form-label">报告类型（选填）</label>
+            <select class="form-input form-select" name="report_type">
+                <option value="">请选择报告类型</option>
+                <option value="可行性研究报告">可行性研究报告</option>
+                <option value="初步可行性研究报告">初步可行性研究报告</option>
+                <option value="项目建议书">项目建议书</option>
+                <option value="资金申请报告">资金申请报告</option>
+                <option value="项目评估报告">项目评估报告</option>
+                <option value="产业 / 企业 / 园区发展规划报告">产业 / 企业 / 园区发展规划报告</option>
+            </select>
+        </div>
+        <button class="form-submit" type="submit">提交申请</button>
+    </form>
+</div>

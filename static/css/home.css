@@ -1,0 +1,280 @@
+/* ══ 产品优势卡片 ══ */
+.adv-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.adv-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 32px 24px;
+    text-align: left;
+}
+.adv-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--brand-bg);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.adv-card h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 10px;
+}
+.adv-card p { font-size: 14px; color: var(--gray); line-height: 1.7; }
+
+@media (max-width: 900px) { .adv-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .adv-grid { grid-template-columns: 1fr; } }
+
+/* ══ 优势卡片悬浮效果 ══ */
+.adv-card-has-tip {
+    transition: transform 0.2s cubic-bezier(0.34,1.2,0.64,1),
+                box-shadow 0.2s ease,
+                border-color 0.2s ease;
+}
+.adv-card-has-tip:hover {
+    transform: translateY(4px);
+    box-shadow: 0 8px 20px rgba(24,84,255,0.08);
+    border-color: rgba(24,84,255,0.3);
+}
+@media (hover: none) {
+    .adv-card-has-tip:active {
+        transform: translateY(4px);
+        box-shadow: 0 8px 20px rgba(24,84,255,0.08);
+        border-color: rgba(24,84,255,0.3);
+    }
+}
+
+/* ══ 3 列网格（用于 6 卡片特色功能）══ */
+.adv-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+@media (max-width: 900px) { .adv-grid-3 { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .adv-grid-3 { grid-template-columns: 1fr; } }
+
+/* ══ 客户案例卡片 ══ */
+.case-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+.case-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 24px;
+}
+.case-tag {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--teal);
+    background: var(--teal-bg);
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: 14px;
+    font-weight: 500;
+}
+.case-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+.case-card p { font-size: 13px; color: var(--gray); line-height: 1.75; }
+.case-result {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--brand);
+    font-weight: 500;
+}
+
+@media (max-width: 900px) { .case-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .case-grid { grid-template-columns: 1fr; } }
+
+/* ══ 合作流程 ══ */
+.process-wrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+.process-item {
+    flex: 1;
+    text-align: center;
+    padding: 0 10px;
+    position: relative;
+}
+.process-item::after {
+    content: '';
+    position: absolute;
+    top: 19px;
+    left: calc(50% + 22px);
+    right: calc(0% - 50% + 22px);
+    width: calc(100% - 44px);
+    height: 1px;
+    background: var(--border);
+}
+.process-item:last-child::after { display: none; }
+.process-num {
+    width: 40px;
+    height: 40px;
+    background: var(--brand);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    margin: 0 auto 16px;
+    position: relative;
+    z-index: 1;
+}
+.process-item h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+}
+.process-item p { font-size: 13px; color: var(--gray); line-height: 1.65; }
+
+@media (max-width: 768px) {
+    .process-wrap { flex-direction: column; gap: 24px; align-items: center; }
+    .process-item::after { display: none; }
+    .process-item { width: 100%; max-width: 300px; }
+}
+
+/* ══ 对比表 ══ */
+.cmp-wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.cmp-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.cmp-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 560px;
+}
+.cmp-table thead th {
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+.cmp-table thead th:first-child {
+    text-align: left;
+    border-right: 1px solid var(--border);
+}
+.cmp-table thead th.cmp-hl {
+    color: var(--brand);
+    background: var(--brand-bg);
+}
+.cmp-table tbody td {
+    padding: 16px 20px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: var(--gray);
+    line-height: 1.7;
+    vertical-align: top;
+    font-size: 13px;
+}
+.cmp-table tbody tr:last-child td { border-bottom: none; }
+.cmp-table tbody td:first-child {
+    text-align: left;
+    font-weight: 500;
+    color: var(--dark);
+    background: var(--bg);
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+}
+.cmp-table tbody td.cmp-hl {
+    background: #FAFBFF;
+    color: var(--dark);
+}
+
+/* ══ 对比表移动端：table → 卡片堆叠 ══ */
+@media (max-width: 640px) {
+    .cmp-wrap { border-radius: 0; border-left: none; border-right: none; }
+    .cmp-scroll { overflow-x: visible; }
+    .cmp-table, .cmp-table tbody { display: block; min-width: unset; width: 100%; }
+    .cmp-table thead { display: none; }
+    .cmp-table tbody tr {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border-bottom: 1px solid var(--border);
+    }
+    .cmp-table tbody tr:last-child { border-bottom: none; }
+    .cmp-table tbody td {
+        display: block;
+        text-align: left;
+        border: none;
+        padding: 12px 16px;
+        font-size: 13px;
+        line-height: 1.65;
+        white-space: normal;
+    }
+    .cmp-table tbody td:first-child {
+        grid-column: 1 / -1;
+        background: var(--bg);
+        border-bottom: 1px solid var(--border);
+        border-right: none;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 10px 16px;
+    }
+    .cmp-table tbody td:nth-child(2)::before {
+        content: "通用大模型";
+        display: block;
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--gray);
+        margin-bottom: 5px;
+        letter-spacing: 0.3px;
+    }
+    .cmp-table tbody td:nth-child(2) {
+        border-right: 1px solid var(--border);
+    }
+    .cmp-table tbody td.cmp-hl::before {
+        content: "✦ 新纪元数智";
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: var(--brand);
+        margin-bottom: 5px;
+        letter-spacing: 0.3px;
+    }
+}
+
+/* ══ FAQ ══ */
+.faq-wrap { max-width: 760px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); padding: 28px 0; }
+.faq-item:first-child { border-top: 1px solid var(--border); }
+.faq-q { font-size: 15px; font-weight: 600; color: var(--dark); margin-bottom: 12px; line-height: 1.5; }
+.faq-a { font-size: 14px; color: var(--gray); line-height: 1.85; }
